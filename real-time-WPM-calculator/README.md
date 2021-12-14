@@ -1,2 +1,0 @@
-# real-time-WPM-calculator
- 
