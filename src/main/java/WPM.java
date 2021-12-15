@@ -1,3 +1,5 @@
+import com.diogonunes.jcolor.Attribute;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
@@ -25,33 +27,55 @@ public class WPM {
             countDown();
         else
             welcome();
-
     }
 
     private static void test() {
+        int x=0;
 
-
-
-        while(true){
+        while (true) {
             cleanScreen();
-            printWords();
+
+            printWords(0, WORDCOUNTPERLINE*2, x, BOLD());
 
             System.out.print("\n-------------------------------------\n");
             System.out.print("Time: 60 | ");
             System.out.print("Net WPS: 150 | ");
             System.out.print("Accuracy: 100%");
+
+            String command = readInput.nextLine();
+
+            switch (command) {
+                case "": {
+                    x++;
+                } break;
+
+                default: {
+                    x--;
+                }
+            }
+
+            System.out.print("\n-------------------------------------\n");
+            System.out.print("Time: 60 | ");
+            System.out.print("Net WPS: 150 | ");
+            System.out.print("Accuracy: 100%");
+
         }
-
-
-
     }
 
-    private static void printWords(){
-        String showingWords="";
+    private static void printWords(int sWordsStartIndex, int sWordsEndIndex, int currentWordIndex, Attribute wordColor){
+        List words= readWordsFromFile(sWordsStartIndex, sWordsEndIndex);
+        words.set(WORDCOUNTPERLINE-1, words.get(WORDCOUNTPERLINE-1)+ "\n");
 
-        List words= readWordsFormFile(0, WORDCOUNTPERLINE*2);
+        words.set(currentWordIndex, colorize((String) words.get(currentWordIndex), wordColor));
 
-        /*for(int i=0; i < words.size(); i++){
+        String showingWords= words.toString().replace(",", "");
+
+        System.out.println(showingWords.substring(1, showingWords.length() - 1));
+
+
+
+        /*String showingWords="";
+        for(int i=0; i < words.size(); i++){
             showingWords += words.get(i)+" ";
 
             if(i+1 == WORDCOUNTPERLINE)
@@ -59,18 +83,12 @@ public class WPM {
 
             if(i+1 == words.size())
                 showingWords = showingWords.substring(0, showingWords.length() - 1);
-        }*/
-
-        System.out.println(words.toString()
-                .replace(",", "")  //remove the commas
-                .replace("[", "")  //remove the right bracket
-                .replace("]", "")  //remove the left bracket
-                .trim());
+        }
+        System.out.println(showingWords);*/
     }
 
 
-
-    private static List<String> readWordsFormFile(int startIndex, int endIndex){
+    private static List<String> readWordsFromFile(int startIndex, int endIndex){
         ArrayList<String> wordList= new ArrayList<>();
 
         try {
@@ -88,6 +106,10 @@ public class WPM {
 
         return wordList.subList(startIndex, endIndex);
     }
+
+
+
+
 
     private static void countDown() {
         timer.scheduleAtFixedRate(new TimerTask() {
