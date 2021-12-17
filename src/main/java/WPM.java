@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
+import static com.diogonunes.jcolor.Ansi.RESET;
 import static com.diogonunes.jcolor.Ansi.colorize;
 import static com.diogonunes.jcolor.Attribute.*;
 
@@ -13,6 +14,13 @@ public class WPM {
     static Timer timer = new Timer();
 
     static int WORDCOUNTPERLINE=12;
+
+
+    //!!!!!!
+    static List words;
+
+
+
 
     public static void main(String[] args) {
         test();
@@ -30,27 +38,34 @@ public class WPM {
     }
 
     private static void test() {
-        int x=0;
+        int wordIndexCounter = 0, lineCounter = WORDCOUNTPERLINE;
 
         while (true) {
+            if(wordIndexCounter == WORDCOUNTPERLINE) {
+                wordIndexCounter = 0;
+                lineCounter += WORDCOUNTPERLINE;
+            }
+
+
             cleanScreen();
 
-            printWords(0, WORDCOUNTPERLINE*2, x, BOLD());
+            printWords(wordIndexCounter, lineCounter, BACK_COLOR(255, 0, 0));
 
             System.out.print("\n-------------------------------------\n");
             System.out.print("Time: 60 | ");
             System.out.print("Net WPS: 150 | ");
             System.out.print("Accuracy: 100%");
-
+            System.out.print(wordIndexCounter);
             String command = readInput.nextLine();
 
             switch (command) {
                 case "": {
-                    x++;
+                   wordIndexCounter++;
                 } break;
 
                 default: {
-                    x--;
+
+                    wordIndexCounter--;
                 }
             }
 
@@ -62,9 +77,13 @@ public class WPM {
         }
     }
 
-    private static void printWords(int sWordsStartIndex, int sWordsEndIndex, int currentWordIndex, Attribute wordColor){
-        List words= readWordsFromFile(sWordsStartIndex, sWordsEndIndex);
-        words.set(WORDCOUNTPERLINE-1, words.get(WORDCOUNTPERLINE-1)+ "\n");
+    private static void printWords(int currentWordIndex, int lineCounter, Attribute wordColor){
+        if(currentWordIndex == 0){
+            words = readWordsFromFile(lineCounter - WORDCOUNTPERLINE, (lineCounter - WORDCOUNTPERLINE) + WORDCOUNTPERLINE * 2);
+            words.set(WORDCOUNTPERLINE-1, words.get(WORDCOUNTPERLINE-1)+ "\n");
+        }
+        else//!!!
+            words.set(currentWordIndex - 1, colorize((String) words.get(currentWordIndex - 1), RESET));
 
         words.set(currentWordIndex, colorize((String) words.get(currentWordIndex), wordColor));
 
@@ -85,6 +104,10 @@ public class WPM {
                 showingWords = showingWords.substring(0, showingWords.length() - 1);
         }
         System.out.println(showingWords);*/
+    }
+
+    private static void colorizeWordsAndLetters(){
+
     }
 
 
