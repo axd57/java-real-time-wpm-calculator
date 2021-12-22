@@ -1,4 +1,6 @@
+import com.diogonunes.jcolor.Ansi;
 import com.diogonunes.jcolor.Attribute;
+import com.diogonunes.jcolor.Command;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -41,6 +43,7 @@ public class WPM {
         int wordIndexCounter = 0, lineCounter = WORDCOUNTPERLINE;
 
         while (true) {
+
             if(wordIndexCounter == WORDCOUNTPERLINE) {
                 wordIndexCounter = 0;
                 lineCounter += WORDCOUNTPERLINE;
@@ -49,13 +52,14 @@ public class WPM {
 
             cleanScreen();
 
-            printWords(wordIndexCounter, lineCounter, BACK_COLOR(255, 0, 0));
+            printWords(wordIndexCounter, lineCounter);
 
             System.out.print("\n-------------------------------------\n");
             System.out.print("Time: 60 | ");
             System.out.print("Net WPS: 150 | ");
-            System.out.print("Accuracy: 100%");
+            System.out.println("Accuracy: 100%");
             System.out.print(wordIndexCounter);
+
             String command = readInput.nextLine();
 
             switch (command) {
@@ -77,15 +81,20 @@ public class WPM {
         }
     }
 
-    private static void printWords(int currentWordIndex, int lineCounter, Attribute wordColor){
+    private static void printWords(int currentWordIndex, int lineCounter){
         if(currentWordIndex == 0){
             words = readWordsFromFile(lineCounter - WORDCOUNTPERLINE, (lineCounter - WORDCOUNTPERLINE) + WORDCOUNTPERLINE * 2);
             words.set(WORDCOUNTPERLINE-1, words.get(WORDCOUNTPERLINE-1)+ "\n");
         }
-        else//!!!
-            words.set(currentWordIndex - 1, colorize((String) words.get(currentWordIndex - 1), RESET));
+        else {
+            // String text=(String) words.get(currentWordIndex - 1);
+            //words.set(currentWordIndex - 1, text.replaceAll("\\d{1,2}(;\\d{1,2})?", ""));
 
-        words.set(currentWordIndex, colorize((String) words.get(currentWordIndex), wordColor));
+
+            words.set(currentWordIndex - 1, RESET + colorize((String) words.get(currentWordIndex - 1), RED_TEXT()));
+        }
+
+        words.set(currentWordIndex, colorize((String) words.get(currentWordIndex), GREEN_TEXT()));
 
         String showingWords= words.toString().replace(",", "");
 
