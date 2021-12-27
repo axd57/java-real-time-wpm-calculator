@@ -1,10 +1,7 @@
-import com.diogonunes.jcolor.Ansi;
-import com.diogonunes.jcolor.Attribute;
-import com.diogonunes.jcolor.Command;
-
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.*;
+import java.util.List;
+import java.util.Timer;
 
 import static com.diogonunes.jcolor.Ansi.RESET;
 import static com.diogonunes.jcolor.Ansi.colorize;
@@ -15,17 +12,19 @@ public class WPM {
     static Scanner readInput = new Scanner(System.in);
     static Timer timer = new Timer();
 
-    static int WORDCOUNTPERLINE=12;
+    static int WORDCOUNTPERLINE = 12;
 
 
     //!!!!!!
     static List words;
+    static List copy;
 
 
 
 
-    public static void main(String[] args) {
-        test();
+    public static void main(String[] args) throws IOException {
+       String x= readInput.nextLine();
+        System.out.println("x:" +x);
     }
 
     private static void welcome() {
@@ -49,7 +48,7 @@ public class WPM {
                 lineCounter += WORDCOUNTPERLINE;
             }
 
-
+            String command="";
             cleanScreen();
 
             printWords(wordIndexCounter, lineCounter);
@@ -59,8 +58,8 @@ public class WPM {
             System.out.print("Net WPS: 150 | ");
             System.out.println("Accuracy: 100%");
             System.out.print(wordIndexCounter);
-
-            String command = readInput.nextLine();
+            System.out.println("Key: "+ command);
+            command = readInput.nextLine();
 
             switch (command) {
                 case "": {
@@ -84,21 +83,25 @@ public class WPM {
     private static void printWords(int currentWordIndex, int lineCounter){
         if(currentWordIndex == 0){
             words = readWordsFromFile(lineCounter - WORDCOUNTPERLINE, (lineCounter - WORDCOUNTPERLINE) + WORDCOUNTPERLINE * 2);
-            words.set(WORDCOUNTPERLINE-1, words.get(WORDCOUNTPERLINE-1)+ "\n");
+            words.set(WORDCOUNTPERLINE-1, words.get(WORDCOUNTPERLINE-1) + "\n");
+            copy = new ArrayList<>(words);
         }
         else {
-            // String text=(String) words.get(currentWordIndex - 1);
-            //words.set(currentWordIndex - 1, text.replaceAll("\\d{1,2}(;\\d{1,2})?", ""));
+            words.set(currentWordIndex - 1 , copy.get(currentWordIndex - 1));
+
+            words.set(currentWordIndex - 1, colorize((String) words.get(currentWordIndex - 1), RED_TEXT()));
 
 
-            words.set(currentWordIndex - 1, RESET + colorize((String) words.get(currentWordIndex - 1), RED_TEXT()));
         }
 
         words.set(currentWordIndex, colorize((String) words.get(currentWordIndex), GREEN_TEXT()));
 
-        String showingWords= words.toString().replace(",", "");
 
+        String showingWords= words.toString().replace(",", "");
         System.out.println(showingWords.substring(1, showingWords.length() - 1));
+
+
+
 
 
 
