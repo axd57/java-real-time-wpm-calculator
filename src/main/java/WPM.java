@@ -5,6 +5,7 @@ import java.io.*;
 import java.util.*;
 import java.util.List;
 import java.util.Timer;
+import java.util.regex.Pattern;
 
 import static com.diogonunes.jcolor.Ansi.colorize;
 import static com.diogonunes.jcolor.Attribute.*;
@@ -19,13 +20,14 @@ public class WPM implements KeyListener {
     static final String RED = "\033[0;31m";
 
     static final String WHITE_BACKGROUND = "\033[47m";
-
+    static final String YELLOW_BACKGROUND = "\033[43m";
+    static final String BLUE_BACKGROUND = "\033[44m";
 
     int currentWordIndex = 0;
-    String typedText = "";
+    String typedWord = null;
 
     static List words;
-    static int lineCounter = 0;
+    static int lineCounter = 0, latestWordIndex = 0;;
 
     static ArrayList<String> wordsFromFile = new ArrayList<>();
 
@@ -37,19 +39,23 @@ public class WPM implements KeyListener {
         //System.out.println("keyPressed");
         char character = e.getKeyChar();
 
-        if(character == KeyEvent.VK_SPACE){
+        if(character == KeyEvent.VK_SPACE && typedWord.length() != 0){
             ++currentWordIndex;
-            typedText = "";
 
             if(currentWordIndex == WORDCOUNTPERLINE)
-                test(currentWordIndex = 0, ' ', typedText);
+                test(currentWordIndex = 0, typedWord = null);
             else
-                test(currentWordIndex, character, typedText);
+                test(currentWordIndex, typedWord = "");
         }
 
+        if(character == KeyEvent.VK_BACK_SPACE && typedWord.length() != 0)
+            test(currentWordIndex, typedWord = typedWord.substring(0, typedWord.length() - 1));
+
+
         if(Character.isAlphabetic(character)){
-            typedText += Character.toString(character);
-            test(currentWordIndex, character, typedText);
+            typedWord = typedWord == null ? "" : typedWord;
+            typedWord += Character.toString(character);
+            test(currentWordIndex, typedWord);
         }
     }
 
@@ -61,15 +67,6 @@ public class WPM implements KeyListener {
         //System.out.println("keyTyped");
     }
 
-
-
-
-
-
-
-
-
-
     public static void main(String[] args) throws IOException {
         JFrame jf = new JFrame("Key event");
         jf.setSize(400,400);
@@ -78,7 +75,7 @@ public class WPM implements KeyListener {
         jf.addKeyListener(new WPM());
         jf.setVisible(true);
 
-        test(0, ' ', "");
+        test(0, null);
     }
 
     private static void welcome() {
@@ -92,54 +89,54 @@ public class WPM implements KeyListener {
             welcome();
     }
 
-    static void test(int currentWordIndex, char currentChar, String typedText) {
+    static void test(int currentWordIndex, String typedWord) {
         cleanScreen();
-        printWords(currentWordIndex, currentChar);
+        printWords(currentWordIndex, typedWord);
 
-        System.out.println("\nTyped: " + typedText);
+        System.out.println("\nTyped: " + (typedWord == null ? "" : typedWord));
         System.out.print("-------------------------------------\n");
         System.out.print("Time: 60 | ");
         System.out.print("Net WPS: 150 | ");
         System.out.println("Accuracy: 100%\n");
-        System.out.print("Index: " + currentWordIndex + " Character: " + currentChar);
+        System.out.print("Index: " + currentWordIndex);
     }
 
-     static void printWords(int currentWordIndex, char currentChar){
-        String previousWord="", nextWord ="";
+     static void printWords(int currentWordIndex, String typedWord){
+        String previousWord="";
 
-        if(currentWordIndex == 0 && currentChar == ' '){
+        //New line gets
+        if(currentWordIndex == 0 && typedWord == null){
             lineCounter += WORDCOUNTPERLINE;
             words = readWordsFromFile(lineCounter);
 
-            words.set(currentWordIndex, "\033[4;37m" + words.get(currentWordIndex) + RESET);
+            words.set(currentWordIndex, cleanAnsiAndSetColor((String) words.get(currentWordIndex), BLUE_BACKGROUND));
 
-            System.out.println("New line");
+            // System.out.println("New line");
         }
         else {
-            if(currentWordIndex != 0 ){
-                previousWord = (String) words.get(currentWordIndex-1);
-                previousWord=previousWord.replace("\033[4;37m", "");
-                words.set(currentWordIndex - 1, previousWord);
+            //Still same word
+            if(latestWordIndex == currentWordIndex){
+                String currentWord =(String) words.get(currentWordIndex);
+                currentWord = currentWord.replaceAll("\u001B\\[[\\d;]*[^\\d;]","");
+
+                if(currentWord.startsWith(typedWord))
+                    words.set(currentWordIndex, cleanAnsiAndSetColor((String) words.get(currentWordIndex), GREEN));
+                else
+                    words.set(currentWordIndex, cleanAnsiAndSetColor((String) words.get(currentWordIndex), RED));
             }
-
-            words.set(currentWordIndex, "\033[4;37m" + words.get(currentWordIndex) + RESET);
-
-            /*nextWord= (String) words.get(currentWordIndex+1);
-            nextWord=nextWord.replace("\033[0;32m", "");
-            words.set(currentWordIndex + 1, nextWord);*/
-
-            System.out.println("Skiped word: " + previousWord + " Next word: " + nextWord);
+            //New word
+            else {
+                latestWordIndex = currentWordIndex;
+                words.set(currentWordIndex, cleanAnsiAndSetColor((String) words.get(currentWordIndex), BLUE_BACKGROUND));
+            }
         }
-
-
-
 
         String showingWords= words.toString().replace(",", "");
         System.out.println(showingWords.substring(1, showingWords.length() - 1));
     }
 
-    private static void colorizeWordsAndLetters(){
-
+    static String cleanAnsiAndSetColor(String word, String color){
+        return color + word.replaceAll("\u001B\\[[\\d;]*[^\\d;]","") + RESET;
     }
 
 
@@ -150,7 +147,7 @@ public class WPM implements KeyListener {
                 Scanner words = new Scanner(file);
 
                 while (words.hasNext()) {
-                    wordsFromFile.add(words.next());
+                    wordsFromFile.add(words.next().toLowerCase(Locale.ROOT));
                 }
 
             } catch (FileNotFoundException e) {
@@ -178,7 +175,7 @@ public class WPM implements KeyListener {
 
                 if (count == 0) {
                     timer.cancel();
-                    test(0, ' ', "");
+                    test(0, null);
                 } else
                     System.out.println("=== " + count + " ===");
 
