@@ -5,6 +5,8 @@ import java.io.*;
 import java.util.*;
 import java.util.List;
 import java.util.Timer;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Pattern;
 
 import static com.diogonunes.jcolor.Ansi.colorize;
@@ -13,6 +15,12 @@ import static com.diogonunes.jcolor.Attribute.*;
 
 public class WPM implements KeyListener {
     static final int WORDCOUNTPERLINE = 12;
+    static int correctCharacterCount = 0, wrongCharacterCount = 0;
+
+    static CalculationThread thread= new CalculationThread();
+    static public final BlockingQueue<String> queue = new LinkedBlockingQueue<String>();
+
+
 
     static final String RESET = "\033[0m";
 
@@ -39,7 +47,7 @@ public class WPM implements KeyListener {
         //System.out.println("keyPressed");
         char character = e.getKeyChar();
 
-        if(character == KeyEvent.VK_SPACE && typedWord.length() != 0){
+        if(character == KeyEvent.VK_SPACE && (typedWord == null ? false : typedWord.length() != 0 ? true : false)){
             ++currentWordIndex;
 
             if(currentWordIndex == WORDCOUNTPERLINE)
@@ -48,7 +56,7 @@ public class WPM implements KeyListener {
                 test(currentWordIndex, typedWord = "");
         }
 
-        if(character == KeyEvent.VK_BACK_SPACE && typedWord.length() != 0)
+        if(character == KeyEvent.VK_BACK_SPACE && (typedWord == null ? false : typedWord.length() != 0 ? true : false))
             test(currentWordIndex, typedWord = typedWord.substring(0, typedWord.length() - 1));
 
 
@@ -76,6 +84,9 @@ public class WPM implements KeyListener {
         jf.setVisible(true);
 
         test(0, null);
+
+        Thread threada= new Thread(thread);
+        threada.start();
     }
 
     private static void welcome() {
@@ -94,16 +105,12 @@ public class WPM implements KeyListener {
         printWords(currentWordIndex, typedWord);
 
         System.out.println("\nTyped: " + (typedWord == null ? "" : typedWord));
-        System.out.print("-------------------------------------\n");
-        System.out.print("Time: 60 | ");
-        System.out.print("Net WPS: 150 | ");
-        System.out.println("Accuracy: 100%\n");
-        System.out.print("Index: " + currentWordIndex);
+        System.out.print("-------------------------------------\n\n");
+
+       // queue.offer(typedWord == null ? "" : typedWord);
     }
 
      static void printWords(int currentWordIndex, String typedWord){
-        String previousWord="";
-
         //New line gets
         if(currentWordIndex == 0 && typedWord == null){
             lineCounter += WORDCOUNTPERLINE;
@@ -116,13 +123,22 @@ public class WPM implements KeyListener {
         else {
             //Still same word
             if(latestWordIndex == currentWordIndex){
-                String currentWord =(String) words.get(currentWordIndex);
-                currentWord = currentWord.replaceAll("\u001B\\[[\\d;]*[^\\d;]","");
+                String currentWord = cleanAnsiAndSetColor((String) words.get(currentWordIndex),"");
 
-                if(currentWord.startsWith(typedWord))
-                    words.set(currentWordIndex, cleanAnsiAndSetColor((String) words.get(currentWordIndex), GREEN));
+                if(typedWord.length() != 0){
+                    if(currentWord.startsWith(typedWord)) {
+                        ++correctCharacterCount;
+                        words.set(currentWordIndex, cleanAnsiAndSetColor((String) words.get(currentWordIndex), GREEN));
+                    }
+                    else{
+                        --wrongCharacterCount;
+                        words.set(currentWordIndex, cleanAnsiAndSetColor((String) words.get(currentWordIndex), RED));
+                    }
+
+                    //thread.getCharacters(correctCharacterCount, wrongCharacterCount);
+                }
                 else
-                    words.set(currentWordIndex, cleanAnsiAndSetColor((String) words.get(currentWordIndex), RED));
+                    words.set(currentWordIndex, cleanAnsiAndSetColor((String) words.get(currentWordIndex), BLUE_BACKGROUND));
             }
             //New word
             else {
@@ -136,7 +152,10 @@ public class WPM implements KeyListener {
     }
 
     static String cleanAnsiAndSetColor(String word, String color){
-        return color + word.replaceAll("\u001B\\[[\\d;]*[^\\d;]","") + RESET;
+        if(color.equals(""))
+            return word.replaceAll("\u001B\\[[\\d;]*[^\\d;]","");
+        else
+            return color + word.replaceAll("\u001B\\[[\\d;]*[^\\d;]","") + RESET;
     }
 
 
@@ -161,6 +180,9 @@ public class WPM implements KeyListener {
         return words;
     }
 
+    static void calculation(){
+
+    }
 
 
 
@@ -184,8 +206,47 @@ public class WPM implements KeyListener {
         }, 0, 1000);
     }
 
+    static void cleanSpecificLineFromBottom(int count) {
+        System.out.print(String.format("\033[%dA",count));
+        System.out.print("\033[2K");
+    }
+
+
      static void cleanScreen() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
+     }
+}
+
+class CalculationThread extends WPM implements Runnable{
+    @Override
+    public void run() {
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            int count = 600;
+
+            public void run() {
+                System.out.print(String.format("\033[%dA", 1));
+                System.out.print("\033[2K");
+
+                if (count == 0) {
+                    timer.cancel();
+
+                    System.out.print("Time: "+ count+" | Net WPS: " + count+ " | Accuracy: " + count+ "%\n");
+
+                } else{
+                    System.out.print("Time: "+ count+" | Net WPS: " + count+ " | Accuracy: " + count+ "%\n");
+                   /* try {
+                        System.out.println(queue.take());
+                    } catch (InterruptedException e) {
+                        System.out.println("hihihihihi\n");
+                    }*/
+
+                }
+
+
+                count--;
+            }
+        }, 0, 300);
     }
 }
