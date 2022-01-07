@@ -18,8 +18,8 @@ public class WPM implements KeyListener {
     static int correctCharacterCount = 0, wrongCharacterCount = 0;
 
     static CalculationThread thread= new CalculationThread();
-    static public final BlockingQueue<String> queue = new LinkedBlockingQueue<String>();
 
+    static int[] threadDatas = new int[2];
 
 
     static final String RESET = "\033[0m";
@@ -129,13 +129,14 @@ public class WPM implements KeyListener {
                     if(currentWord.startsWith(typedWord)) {
                         ++correctCharacterCount;
                         words.set(currentWordIndex, cleanAnsiAndSetColor((String) words.get(currentWordIndex), GREEN));
-                    }
-                    else{
-                        --wrongCharacterCount;
+
+                    }else{
+                        ++wrongCharacterCount;
                         words.set(currentWordIndex, cleanAnsiAndSetColor((String) words.get(currentWordIndex), RED));
                     }
 
-                    //thread.getCharacters(correctCharacterCount, wrongCharacterCount);
+                    threadDatas[0] = correctCharacterCount;
+                    threadDatas[1] = wrongCharacterCount;
                 }
                 else
                     words.set(currentWordIndex, cleanAnsiAndSetColor((String) words.get(currentWordIndex), BLUE_BACKGROUND));
@@ -218,14 +219,17 @@ public class WPM implements KeyListener {
      }
 }
 
-class CalculationThread extends WPM implements Runnable{
+class CalculationThread implements Runnable{
+    int count = 600, cCC=0, wCC=0;
     @Override
     public void run() {
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
-            int count = 600;
-
             public void run() {
+                cCC = WPM.threadDatas[0];
+                wCC = WPM.threadDatas[1];
+
+
                 System.out.print(String.format("\033[%dA", 1));
                 System.out.print("\033[2K");
 
@@ -233,20 +237,12 @@ class CalculationThread extends WPM implements Runnable{
                     timer.cancel();
 
                     System.out.print("Time: "+ count+" | Net WPS: " + count+ " | Accuracy: " + count+ "%\n");
-
-                } else{
-                    System.out.print("Time: "+ count+" | Net WPS: " + count+ " | Accuracy: " + count+ "%\n");
-                   /* try {
-                        System.out.println(queue.take());
-                    } catch (InterruptedException e) {
-                        System.out.println("hihihihihi\n");
-                    }*/
-
-                }
-
+                }else
+                    System.out.println("Count: " + count + " CorrectC: " + cCC + " WrongC: " + wCC);
+                    //System.out.print("Time: "+ count+" | Net WPS: " + count+ " | Accuracy: " + count+ "%\n");
 
                 count--;
             }
-        }, 0, 300);
+        }, 0, 500);
     }
 }
