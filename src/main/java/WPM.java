@@ -83,14 +83,19 @@ public class WPM implements KeyListener {
         jf.addKeyListener(new WPM());
         jf.setVisible(true);
 
+        cleanScreen();
+
         test(0, null);
 
         Thread threada= new Thread(thread);
         threada.start();
+
+
+
+
     }
 
     private static void welcome() {
-        cleanScreen();
         System.out.println(colorize("=====", WHITE_TEXT()) + colorize("Real Time WPS Calculator", YELLOW_TEXT()) + colorize("=====", WHITE_TEXT()));
         System.out.println("Press \"Enter\" to start.");
         Scanner readInput = new Scanner(System.in);
@@ -101,10 +106,24 @@ public class WPM implements KeyListener {
     }
 
     static void test(int currentWordIndex, String typedWord) {
-        cleanScreen();
-        printWords(currentWordIndex, typedWord);
 
+
+        System.out.print(String.format("\033[%dA", 2));
+        System.out.print("\033[2K");
+
+        System.out.print(String.format("\033[%dA", 3));
+        System.out.print("\033[2K");
+
+        System.out.print(String.format("\033[%dA", 4));
+        System.out.print("\033[2K");
+
+        System.out.print(String.format("\033[%dA", 5));
+        System.out.print("\033[2K");
+
+
+        printWords(currentWordIndex, typedWord);
         System.out.println("\nTyped: " + (typedWord == null ? "" : typedWord));
+
         System.out.print("-------------------------------------\n\n");
 
        // queue.offer(typedWord == null ? "" : typedWord);
@@ -207,9 +226,13 @@ public class WPM implements KeyListener {
         }, 0, 1000);
     }
 
-    static void cleanSpecificLineFromBottom(int count) {
-        System.out.print(String.format("\033[%dA",count));
+    static void cleanWordsArea() {
+        System.out.print(String.format("\033[%dA", 1));
         System.out.print("\033[2K");
+
+        System.out.print(String.format("\033[%dA", 2));
+        System.out.print("\033[2K");
+
     }
 
 

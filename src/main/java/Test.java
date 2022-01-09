@@ -4,26 +4,19 @@ import java.awt.event.KeyListener;
 import javax.swing.JFrame;
 
 
-public class Test implements KeyListener{
-    public void keyPressed(KeyEvent e) {
-        System.out.println("keyPressed");
-        System.out.println(e.getKeyChar());
-    }
+public class Test{
 
-    public void keyReleased(KeyEvent e) {
-        System.out.println("keyReleased");
-
-    }
-    public void keyTyped(KeyEvent e) {
-        System.out.println("keyTyped");
-    }
 
     public static void main(String[] args) {
-       JFrame jf = new JFrame("Key event");
-       jf.setSize(400,400);
-       jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        System.out.println("1-Hi");
+        System.out.println("2-Hi");
+        System.out.println("3-Hi");
+        System.out.println("4-Hi");
+        System.out.println("5-Hi");
 
-       jf.addKeyListener(new Test());
-       jf.setVisible(true);
+        int count = 1;
+        System.out.print(String.format("\033[%dA",3)); // Move up
+        System.out.print("\033[2K"); // Erase line content
+
     }
 }
