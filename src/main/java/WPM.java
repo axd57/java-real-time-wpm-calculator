@@ -22,6 +22,7 @@ public class WPM implements KeyListener {
     static int[] threadDatas = new int[2];
 
 
+
     static final String RESET = "\033[0m";
 
     static final String GREEN = "\033[0;32m";
@@ -33,6 +34,8 @@ public class WPM implements KeyListener {
 
     int currentWordIndex = 0;
     String typedWord = null;
+
+    static boolean startControl = false;
 
     static List words;
     static int lineCounter = 0, latestWordIndex = 0;;
@@ -50,10 +53,22 @@ public class WPM implements KeyListener {
         if(character == KeyEvent.VK_SPACE && (typedWord == null ? false : typedWord.length() != 0 ? true : false)){
             ++currentWordIndex;
 
+
             if(currentWordIndex == WORDCOUNTPERLINE)
                 test(currentWordIndex = 0, typedWord = null);
-            else
+            else{
+                // Ture word control after space
+              if(cleanAnsiAndSetColor((String) words.get(latestWordIndex),"").equals(typedWord))
+                  correctCharacterCount += typedWord.length() + 1;
+              else{
+                  words.set(latestWordIndex, cleanAnsiAndSetColor((String) words.get(latestWordIndex), RED));
+                  wrongCharacterCount += cleanAnsiAndSetColor((String) words.get(latestWordIndex),"").length() + 1;
+              }
+
+
                 test(currentWordIndex, typedWord = "");
+            }
+
         }
 
         if(character == KeyEvent.VK_BACK_SPACE && (typedWord == null ? false : typedWord.length() != 0 ? true : false))
@@ -65,6 +80,10 @@ public class WPM implements KeyListener {
             typedWord += Character.toString(character);
             test(currentWordIndex, typedWord);
         }
+
+
+        threadDatas[0] = correctCharacterCount;
+        threadDatas[1] = wrongCharacterCount;
     }
 
     public void keyReleased(KeyEvent e) {
@@ -82,9 +101,7 @@ public class WPM implements KeyListener {
 
         jf.addKeyListener(new WPM());
         jf.setVisible(true);
-
         cleanScreen();
-
         test(0, null);
 
         Thread threada= new Thread(thread);
@@ -106,27 +123,20 @@ public class WPM implements KeyListener {
     }
 
     static void test(int currentWordIndex, String typedWord) {
-
-
-        System.out.print(String.format("\033[%dA", 2));
-        System.out.print("\033[2K");
-
-        System.out.print(String.format("\033[%dA", 3));
-        System.out.print("\033[2K");
-
-        System.out.print(String.format("\033[%dA", 4));
-        System.out.print("\033[2K");
-
-        System.out.print(String.format("\033[%dA", 5));
-        System.out.print("\033[2K");
-
+       if(typedWord != null || startControl){
+          startControl = true;
+           for(int i =3; i < 7; i++){
+               System.out.print(String.format("\033[%dA", i));
+               System.out.print("\033[2K");
+           }
+       }
 
         printWords(currentWordIndex, typedWord);
         System.out.println("\nTyped: " + (typedWord == null ? "" : typedWord));
 
         System.out.print("-------------------------------------\n\n");
 
-       // queue.offer(typedWord == null ? "" : typedWord);
+
     }
 
      static void printWords(int currentWordIndex, String typedWord){
@@ -139,6 +149,7 @@ public class WPM implements KeyListener {
 
             // System.out.println("New line");
         }
+        //Same line
         else {
             //Still same word
             if(latestWordIndex == currentWordIndex){
@@ -146,16 +157,18 @@ public class WPM implements KeyListener {
 
                 if(typedWord.length() != 0){
                     if(currentWord.startsWith(typedWord)) {
-                        ++correctCharacterCount;
-                        words.set(currentWordIndex, cleanAnsiAndSetColor((String) words.get(currentWordIndex), GREEN));
+                        if(currentWord.length() == typedWord.length())
+                            words.set(currentWordIndex, cleanAnsiAndSetColor((String) words.get(currentWordIndex), GREEN));
+                        else
+                            words.set(currentWordIndex, cleanAnsiAndSetColor((String) words.get(currentWordIndex), YELLOW_BACKGROUND));
 
                     }else{
-                        ++wrongCharacterCount;
+
                         words.set(currentWordIndex, cleanAnsiAndSetColor((String) words.get(currentWordIndex), RED));
                     }
 
-                    threadDatas[0] = correctCharacterCount;
-                    threadDatas[1] = wrongCharacterCount;
+                    /*threadDatas[0] = correctCharacterCount;
+                    threadDatas[1] = wrongCharacterCount;*/
                 }
                 else
                     words.set(currentWordIndex, cleanAnsiAndSetColor((String) words.get(currentWordIndex), BLUE_BACKGROUND));
@@ -207,6 +220,7 @@ public class WPM implements KeyListener {
 
 
 
+
      static void countDown() {
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(new TimerTask() {
@@ -226,16 +240,6 @@ public class WPM implements KeyListener {
         }, 0, 1000);
     }
 
-    static void cleanWordsArea() {
-        System.out.print(String.format("\033[%dA", 1));
-        System.out.print("\033[2K");
-
-        System.out.print(String.format("\033[%dA", 2));
-        System.out.print("\033[2K");
-
-    }
-
-
      static void cleanScreen() {
         System.out.print("\033[H\033[2J");
         System.out.flush();
@@ -243,7 +247,8 @@ public class WPM implements KeyListener {
 }
 
 class CalculationThread implements Runnable{
-    int count = 600, cCC=0, wCC=0;
+    int cCC=0, wCC=0, grossWPM = 0, netWPM = 0, time = 59, x=0;
+    float accurasy = 0f;
     @Override
     public void run() {
         Timer timer = new Timer();
@@ -252,20 +257,31 @@ class CalculationThread implements Runnable{
                 cCC = WPM.threadDatas[0];
                 wCC = WPM.threadDatas[1];
 
+                if(cCC !=0 || wCC !=0 ){
+                    grossWPM =Math.round((cCC+wCC) / 5f / ((60 - time)/60f));
+                    netWPM = grossWPM - Math.round((wCC / 5f / ((60 - time)/60f)));
+                    accurasy = (float) cCC / (cCC + wCC) * 100;
+                }
+
+
+
 
                 System.out.print(String.format("\033[%dA", 1));
                 System.out.print("\033[2K");
 
-                if (count == 0) {
+
+
+                if (time == 0) {
                     timer.cancel();
 
-                    System.out.print("Time: "+ count+" | Net WPS: " + count+ " | Accuracy: " + count+ "%\n");
+                    System.out.print("Complated.");
+                    System.out.println(grossWPM + " " + netWPM + " " + accurasy + " " + cCC + " " + wCC);
                 }else
-                    System.out.println("Count: " + count + " CorrectC: " + cCC + " WrongC: " + wCC);
-                    //System.out.print("Time: "+ count+" | Net WPS: " + count+ " | Accuracy: " + count+ "%\n");
+                    System.out.print("Time: "+ time + " | Net WPS: " + netWPM + " | Accuracy: " + accurasy + "%\n");
 
-                count--;
+
+                time--;
             }
-        }, 0, 500);
+        }, 0, 1000);
     }
 }
