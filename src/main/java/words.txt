@@ -1,2 +1,12 @@
-must being must until soon quite Lorem Ipsum is simply dummy text of the printing and typesetting industry cat dog Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32.
-The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.
+Nullam efficitur aliquam lectus id dapibus Fusce mollis eu ligula sit amet
+faucibus Mauris faucibus congue nulla vel mollis ex blandit ut Duis eu elit
+tristique fermentum purus vitae congue nisl Etiam at purus et mi rutrum auctor
+eget eu risus Sed lobortis id magna in condimentum Quisque quis congue massa
+sit amet maximus mauris Quisque convallis neque massa ac posuere nulla fermentum
+ut In egestas felis enim Proin posuere id justo nec auctor Nunc et lectus tellus
+Nunc vehicula ullamcorper tincidunt Mauris eu tortor scelerisque dolor rhoncus
+fringilla ac nec sem Donec id quam velit Curabitur gravida risus eget pharetra
+sollicitudin erat orci iaculis elit vitae accumsan nisl erat vitae urna Donec in
+varius eros Nam posuere odio massa vitae dignissim turpis maximus ac Etiam scelerisque
+sem at varius lobortis tortor libero semper mi nec tempor ante quam sed urna Nullam est
+sapien fringilla sit amet iaculis eu venenatis
