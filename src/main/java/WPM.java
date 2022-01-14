@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.border.Border;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.*;
@@ -8,8 +10,11 @@ import java.util.Timer;
 
 
 public class WPM implements KeyListener {
+    //Total word count per line. Customizable (e.g 15, 10, 20, ...) must be WORDCOUNTPERLINE > 0.
     static final int WORDCOUNTPERLINE = 12;
-
+    //Test duration.
+    static  int duration = 59;
+    static CalculationThread CThread = new CalculationThread();
     static boolean isTestActive = false;
 
     static ArrayList<String> wordsFromFile = new ArrayList<>();
@@ -34,14 +39,22 @@ public class WPM implements KeyListener {
     static final String BLUE_BACKGROUND = "\033[44m";
 
     public static void main(String[] args) throws IOException {
-        JFrame jf = new JFrame("WPM Typing Scanner");
-        jf.setSize(400,400);
-        jf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        jf.addKeyListener(new WPM());
-        final JLabel label = new JLabel("Focus here during type.");
-        jf.add(label);
+        JFrame jFrame = new JFrame("WPM Typing Scanner");
+        JLabel label;
+        Border border;
 
-        jf.setVisible(true);
+        jFrame.setSize(300,300);
+        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        jFrame.setVisible(true);
+        jFrame.addKeyListener(new WPM());
+
+        label  = new JLabel("Focus here while typing.", JLabel.CENTER);
+        label.setFont(new Font(label.getName(), Font.PLAIN, 20));
+
+        border = BorderFactory.createLineBorder(Color.GREEN, 5);
+
+        label.setBorder(border);
+        jFrame.add(label);
 
         cleanScreen();
         welcome();
@@ -59,8 +72,10 @@ public class WPM implements KeyListener {
                currentWordIndex++;
                allTypedCharacterCount++;
 
-               if(currentWordIndex == WORDCOUNTPERLINE)
+               if(currentWordIndex == WORDCOUNTPERLINE){
+                   latestWordIndex = 0;
                    test(currentWordIndex = 0, typedWord = null);
+               }
                else{
                     // True word control after space
                     if(cleanAnsiAndSetColor((String) words.get(latestWordIndex),"").equals(typedWord))
@@ -106,7 +121,8 @@ public class WPM implements KeyListener {
                 "╚╝╚══╩╝╚╩═╝  ╚═╩╩╩╩╩══╝  ╚╝╚╝║╔═╩╩╩╝ ╚══╩╝╚╩═╩══╩══╩═╩╝╚╩═╩══╩╝\n" +
                 "                             ║║\n" +
                 "                             ╚╝ by axd99\n"+
-                cleanAnsiAndSetColor("────────────────────────────────────────────────────────────────\n", YELLOW));
+                cleanAnsiAndSetColor("────────────────────────────────────────────────────────────────", YELLOW));
+        System.out.println(cleanAnsiAndSetColor("Always stay focused on the frame for typing.\n", YELLOW));
         System.out.println("Press \"Enter\" to start.");
     }
 
@@ -121,11 +137,11 @@ public class WPM implements KeyListener {
                 if (count == 0) {
                     timer.cancel();
 
-                    isTestActive =true;
+                    isTestActive = true;
                     test(0, null);
 
-                    CalculationThread thread= new CalculationThread();
-                    CalculationThread.thread = new Thread(thread);
+
+                    CalculationThread.thread = new Thread(CThread);
                     CalculationThread.thread.start();
                 } else
                     System.out.println(cleanAnsiAndSetColor("─────────────── ", YELLOW) + count + cleanAnsiAndSetColor(" ───────────────", YELLOW));
@@ -166,16 +182,16 @@ public class WPM implements KeyListener {
             //Still same word
             if(latestWordIndex == currentWordIndex){
                 String currentWord = cleanAnsiAndSetColor((String) words.get(currentWordIndex),"");
+                if(currentWordIndex == WORDCOUNTPERLINE - 1)
+                    currentWord = currentWord.replace("\n", "");
 
                 if(typedWord.length() != 0){
                     if(currentWord.startsWith(typedWord)) {
-                        if(currentWord.length() == typedWord.length())
+                        if(currentWord.equals(typedWord))
                             words.set(currentWordIndex, cleanAnsiAndSetColor((String) words.get(currentWordIndex), GREEN));
                         else
                             words.set(currentWordIndex, cleanAnsiAndSetColor((String) words.get(currentWordIndex), YELLOW));
-
                     }else{
-
                         words.set(currentWordIndex, cleanAnsiAndSetColor((String) words.get(currentWordIndex), RED));
                     }
                 }
@@ -208,9 +224,15 @@ public class WPM implements KeyListener {
                 e.printStackTrace();
             }
         }
-        ArrayList<String> words = new ArrayList<>(wordsFromFile.subList(lineCounter - WORDCOUNTPERLINE, (lineCounter - WORDCOUNTPERLINE) + WORDCOUNTPERLINE * 2));
-        words.set(WORDCOUNTPERLINE-1, words.get(WORDCOUNTPERLINE-1) + "\n");
 
+        ArrayList<String> words = null;
+        try {
+            words = new ArrayList<>(wordsFromFile.subList(lineCounter - WORDCOUNTPERLINE, (lineCounter - WORDCOUNTPERLINE) + WORDCOUNTPERLINE * 2));
+            words.set(WORDCOUNTPERLINE-1, words.get(WORDCOUNTPERLINE-1) + "\n");
+        }catch (Exception e){
+            CThread.cleanVariablesAndShowResultScreen(true);
+            System.exit(1);
+        }
         return words;
     }
 
@@ -228,8 +250,9 @@ public class WPM implements KeyListener {
 }
 
 class CalculationThread extends Thread{
+
     static Thread thread;
-    int aCC=0, cCC=0, wCC=0, grossWPM = 0, netWPM = 0, duration = 59;
+    int aCC=0, cCC=0, wCC=0, grossWPM = 0, netWPM = 0;
     float accuracy = 0f;
 
     @Override
@@ -242,8 +265,8 @@ class CalculationThread extends Thread{
                 aCC = WPM.threadDatas[2];
 
                 if(aCC != 0){
-                    grossWPM =Math.round((cCC+wCC) / 5f / ((60 - duration)/60f));
-                    netWPM = grossWPM - Math.round((wCC / 5f / ((60 - duration)/60f)));
+                    grossWPM =Math.round((cCC+wCC) / 5f / ((60 - WPM.duration)/60f));
+                    netWPM = grossWPM - Math.round((wCC / 5f / ((60 - WPM.duration)/60f)));
                     accuracy = (float) cCC / aCC * 100;
 
                 }
@@ -251,21 +274,21 @@ class CalculationThread extends Thread{
                 System.out.print(String.format("\033[%dA", 1));
                 System.out.print("\033[2K");
 
-                if (duration == 0) {
+                if (WPM.duration == 0) {
                     timer.cancel();
-                    cleanVariables();
-                    thread.stop();
-                    resultScreen();
+                    thread.interrupt();
+                    cleanVariablesAndShowResultScreen(false);
                 }else
-                    System.out.print("Time: "+  duration + "s | Net WPS: " + netWPM + " | Accuracy: " + String.format("%.2f", accuracy) + "%\n");
+                    System.out.print("Time: "+  WPM.duration + "s | Net WPS: " + netWPM + " | Accuracy: " + String.format("%.2f", accuracy) + "%\n");
 
-                duration--;
+                WPM.duration--;
             }
         }, 0, 1000);
     }
 
-    void cleanVariables(){
+    void cleanVariablesAndShowResultScreen(boolean isEndOfWords){
         WPM.isTestActive = false;
+        WPM.duration = 59;
         WPM.lineCounter = 0;
         WPM.latestWordIndex = 0;
         WPM.currentWordIndex = 0;
@@ -274,9 +297,7 @@ class CalculationThread extends Thread{
         WPM.correctCharacterCount = 0;
         WPM.wrongCharacterCount = 0;
         WPM.startControl = false;
-    }
 
-    void resultScreen(){
         WPM.cleanScreen();
 
         System.out.println(WPM.cleanAnsiAndSetColor("───────────────", WPM.YELLOW) + " Results " + WPM.cleanAnsiAndSetColor("─────────────── ", WPM.YELLOW));
@@ -285,6 +306,8 @@ class CalculationThread extends Thread{
         System.out.println("Accuracy: " + WPM.cleanAnsiAndSetColor(String.format("%.2f", accuracy) + "%", WPM.YELLOW));
         System.out.println("─────────");
         System.out.println("All entrys: " + aCC + " | Correct: " + WPM.cleanAnsiAndSetColor(String.valueOf(cCC), WPM.GREEN) + " | Wrong: " + WPM.cleanAnsiAndSetColor(String.valueOf(wCC), WPM.RED));
-        System.out.println("\nPress \"Enter\" for restart.");
+
+        if(!isEndOfWords)
+            System.out.println("\nPress \"Enter\" for restart.");
     }
 }
