@@ -22,7 +22,7 @@ Is a measure of words processed in a minute, often used as a measurement of the 
 - Change words in ```words.txt``` and save.
 
 ## Fetures
-- Real time Net WPM and accuracy calculation.
+- Real time net WPM and accuracy calculation.
 - Test words customization.
 
 ## Screenshots
