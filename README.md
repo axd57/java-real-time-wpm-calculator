@@ -14,7 +14,7 @@ Is a measure of words processed in a minute, often used as a measurement of the 
 
 ## Usage
 ### Run Project
-- Locate ```WPMCalculator``` folder any terminal (e.g Powershell, Comand Prompt).
+- Locate ```WPMCalculator``` folder any terminal (e.g. Powershell, Comand Prompt).
 - ⚠️ Must be ```words.txt``` and ```RealTimeWPMCalculator.jar``` same location.
 - Run comand: ```java -jar .\RealTimeWPMCalculator.jar```
 
