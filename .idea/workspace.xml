@@ -10,7 +10,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7c4450b2-020e-4d51-8dfc-187d649de08e" name="Changes" comment="thread-updated">
-      <change beforePath="$PROJECT_DIR$/out/artifacts/RealTimeWPMCalculator_jar/RealTimeWPMCalculator.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectFiles/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectFiles/.idea/artifacts/RealTimeWPMCalculator_jar.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectFiles/.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectFiles/.idea/jarRepositories.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectFiles/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectFiles/.idea/runConfigurations.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectFiles/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectFiles/META-INF/MANIFEST.MF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectFiles/src/main/java/WPM.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectFiles/src/main/java/words.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectFiles/target/classes/CalculationThread$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectFiles/target/classes/CalculationThread.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectFiles/target/classes/WPM$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectFiles/target/classes/WPM.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPMCalculator/RealTimeWPMCalculator.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WPMCalculator/words.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/1.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/2.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/3.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/images/banner.png" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
