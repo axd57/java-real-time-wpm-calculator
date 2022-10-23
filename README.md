@@ -14,7 +14,7 @@ Is a measure of words processed in a minute, often used as a measurement of the 
 
 ## Usage
 ### Run Project
-- Locate ```WPMCalculator``` folder any terminal (e.g Powershell, Comand Prompt).
+- Locate ```WPMCalculator``` folder any terminal (e.g. Powershell, Comand Prompt).
 - ⚠️ Must be ```words.txt``` and ```RealTimeWPMCalculator.jar``` same location.
 - Run comand: ```java -jar .\RealTimeWPMCalculator.jar```
 
@@ -22,8 +22,9 @@ Is a measure of words processed in a minute, often used as a measurement of the 
 - Change words in ```words.txt``` and save.
 
 ## Fetures
-- Real time net WPM and accuracy calculation.
+- Real time gross WPM, net WPM and accuracy calculation.
 - Test words customization.
+- Word count customization per line.
 
 ## Screenshots
 ### Start Screen
