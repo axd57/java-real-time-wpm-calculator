@@ -9,29 +9,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7c4450b2-020e-4d51-8dfc-187d649de08e" name="Changes" comment="thread-updated">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectFiles/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectFiles/.idea/artifacts/RealTimeWPMCalculator_jar.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectFiles/.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectFiles/.idea/jarRepositories.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectFiles/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectFiles/.idea/runConfigurations.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectFiles/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectFiles/META-INF/MANIFEST.MF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectFiles/src/main/java/WPM.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectFiles/src/main/java/words.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectFiles/target/classes/CalculationThread$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectFiles/target/classes/CalculationThread.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectFiles/target/classes/WPM$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/ProjectFiles/target/classes/WPM.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WPMCalculator/RealTimeWPMCalculator.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WPMCalculator/words.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/1.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/2.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/3.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/images/banner.png" beforeDir="false" />
-    </list>
+    <list default="true" id="7c4450b2-020e-4d51-8dfc-187d649de08e" name="Changes" comment="thread-updated" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -55,24 +33,21 @@
       <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
     </file-type-list>
   </component>
-  <component name="HighlightingSettingsPerFile">
-    <setting file="jar://$MAVEN_REPOSITORY$/com/diogonunes/JColor/5.2.0/JColor-5.2.0-sources.jar!/com/diogonunes/jcolor/Ansi.java" root0="FORCE_HIGHLIGHTING" />
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="21mEJMVOF2ZK3znefmVQGoSKC13" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="project.structure.last.edited" value="Artifacts" />
-    <property name="project.structure.proportion" value="0.15" />
-    <property name="project.structure.side.proportion" value="0.2045977" />
-    <property name="settings.editor.selected.configurable" value="terminal" />
-  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "C:/Users/Ahmet/Desktop/Java/Projects/RealTimeWPMCalculator"
+  }
+}]]></component>
   <component name="ReaderModeSettings">
     <option name="enabled" value="false" />
   </component>
@@ -247,7 +222,6 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="updated" />
